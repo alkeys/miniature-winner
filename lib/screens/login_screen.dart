@@ -40,6 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
         print('Usuario autenticado: $userId');
 
+
         // Navegar a otra pantalla (por ejemplo, Dashboard)
         Navigator.pushReplacementNamed(context, '/dashboard');
       } else {
