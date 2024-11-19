@@ -92,7 +92,7 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
 
 
   Future<void> _register() async {
-    final String apiUrl = 'http://127.0.0.1:8000/usuario/';
+    final String apiUrl = 'http://127.0.0.1:8000/usuarios/';
 
     if (_registerNameController.text.isEmpty ||
         _registerLastNameController.text.isEmpty ||
@@ -122,7 +122,7 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
         }),
       );
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Usuario registrado con éxito')),
         );

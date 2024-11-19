@@ -65,8 +65,15 @@ sudo apt install clang cmake ninja-build libgtk-3-dev
    ```bash
    flutter build linux
    ```
+   
+3. si deseas ejecutar en web 
+```bash
+flutter run -d web
+  ```
 
    Esto generará un ejecutable en `build/linux/release/bundle`.
+
+
 
 ## Resolución de Problemas
 
