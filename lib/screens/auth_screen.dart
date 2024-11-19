@@ -17,6 +17,7 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
   final TextEditingController _registerPasswordController = TextEditingController();
   final TextEditingController _registerNameController = TextEditingController();
   final TextEditingController _registerLastNameController = TextEditingController();
+  final String urlApi='https://symmetrical-funicular-mb61.onrender.com';
 
   bool _isLoading = false;
 
@@ -33,7 +34,8 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
   }
 
   Future<void> _login() async {
-    final String apiUrl = 'http://127.0.0.1:8000/usuarios/login/user/pass';
+
+    final String apiUrl = '$urlApi/usuarios/login/user/pass';
 
     if (_usernameController.text.isEmpty || _passwordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -92,7 +94,7 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
 
 
   Future<void> _register() async {
-    final String apiUrl = 'http://127.0.0.1:8000/usuarios/';
+    final String apiUrl = '$urlApi/usuarios/';
 
     if (_registerNameController.text.isEmpty ||
         _registerLastNameController.text.isEmpty ||

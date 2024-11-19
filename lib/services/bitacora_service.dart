@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import '../models/Bitacora.dart';
 
 class BitacoraService {
-  final String baseUrl = 'http://127.0.0.1:8000/bitacora';
+  final String baseUrl ='https://symmetrical-funicular-mb61.onrender.com/bitacora';
 
   /// Obtiene todas las bitácoras
   Future<List<Bitacora>> getBitacoras() async {

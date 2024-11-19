@@ -19,6 +19,7 @@ class _CreateBitacoraScreenState extends State<CreateBitacoraScreen> {
   final TextEditingController _numGalonesController = TextEditingController();
   final TextEditingController _costoController = TextEditingController();
   final TextEditingController _tipoGasolinaController = TextEditingController();
+  final String _url = 'https://symmetrical-funicular-mb61.onrender.com';
 
   // Variables para dropdowns
   List<Map<String, dynamic>> _vehiculos = [];
@@ -40,11 +41,11 @@ class _CreateBitacoraScreenState extends State<CreateBitacoraScreen> {
   Future<void> _fetchDropdownData() async {
     try {
       final vehiculosResponse =
-      await http.get(Uri.parse('http://127.0.0.1:8000/vehiculos'));
+      await http.get(Uri.parse('$_url/vehiculos'));
       final gasolinerasResponse =
-      await http.get(Uri.parse('http://127.0.0.1:8000/gasolineras'));
+      await http.get(Uri.parse('$_url/gasolineras'));
       final proyectosResponse =
-      await http.get(Uri.parse('http://127.0.0.1:8000/proyecto'));
+      await http.get(Uri.parse('$_url/proyecto'));
 
       if (vehiculosResponse.statusCode == 200 &&
           gasolinerasResponse.statusCode == 200 &&
@@ -80,7 +81,7 @@ class _CreateBitacoraScreenState extends State<CreateBitacoraScreen> {
   }
 
   Future<void> _createBitacora() async {
-    final String apiUrl = 'http://127.0.0.1:8000/bitacora/';
+    final String apiUrl = '$_url/bitacora/';
 
     if (_formKey.currentState!.validate()) {
       if (_selectedVehiculo == null ||
