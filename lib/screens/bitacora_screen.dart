@@ -13,6 +13,7 @@ class _BitacoraScreenState extends State<BitacoraScreen> {
   final BitacoraService _service = BitacoraService();
   late Future<List<Bitacora>> _bitacoras;
   late int _userId;
+  late int _role;
   Timer? _timer; // Timer para actualizar automáticamente
 
   @override
@@ -36,7 +37,8 @@ class _BitacoraScreenState extends State<BitacoraScreen> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _userId = prefs.getInt('userId') ?? 0; // Cargar el ID del usuario
-      print('ID de usuario: $_userId');
+      _role = prefs.getInt('rol') ?? 0; // Cargar el rol del usuario
+      print('ID de usuario y rol es : $_userId $_role');
       _bitacoras = _fetchFilteredBitacoras(); // Actualizar la lista de bitácoras
     });
   }

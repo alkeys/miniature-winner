@@ -17,6 +17,7 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
   final TextEditingController _registerPasswordController = TextEditingController();
   final TextEditingController _registerNameController = TextEditingController();
   final TextEditingController _registerLastNameController = TextEditingController();
+  final String apiUrl1 = 'http://127.0.0.1:8000';
 
   bool _isLoading = false;
 
@@ -33,7 +34,7 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
   }
 
   Future<void> _login() async {
-    final String apiUrl = 'http://127.0.0.1:8000/usuarios/login/user/pass';
+    final String apiUrl = '$apiUrl1/usuarios/login/user/pass';
 
     if (_usernameController.text.isEmpty || _passwordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -59,6 +60,7 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         final userId = data['id_usr'];
+        final rol = data['id_rol'];
 
         // Guardar el ID del usuario en SharedPreferences
         final prefs = await SharedPreferences.getInstance();
@@ -66,7 +68,12 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
 
 
         // Navegar a la pantalla de Bitácora
-        Navigator.pushReplacementNamed(context, '/bitacora');
+        if (rol == 2) {
+          Navigator.pushReplacementNamed(context, '/admin');
+        } else if (rol == 1) {
+          Navigator.pushReplacementNamed(context, '/bitacora');
+        }
+
       } else if (response.statusCode == 401) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Credenciales incorrectas')),
@@ -92,7 +99,7 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
 
 
   Future<void> _register() async {
-    final String apiUrl = 'http://127.0.0.1:8000/usuarios/';
+    final String apiUrl = '$apiUrl1/usuarios/';
 
     if (_registerNameController.text.isEmpty ||
         _registerLastNameController.text.isEmpty ||
