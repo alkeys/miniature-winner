@@ -15,8 +15,7 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
   final TextEditingController _rendimientoController = TextEditingController();
   final TextEditingController _galonajeController = TextEditingController();
   final TextEditingController _tipoCombustibleController = TextEditingController();
-
-  final String apiUrlVehiculos = 'http://127.0.0.1:8000/vehiculos/';
+  final String apiUrlVehiculos = 'https://symmetrical-funicular-mb61.onrender.com/vehiculos/';
 
   @override
   void initState() {

@@ -17,8 +17,8 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
   int? _selectedRol; // Rol seleccionado
   bool _activo = true;
 
-  final String apiUrlUsuarios = 'http://127.0.0.1:8000/usuarios';
-  final String apiUrlRoles = 'http://127.0.0.1:8000/rol'; // URL para obtener roles
+  final String apiUrlUsuarios = 'https://symmetrical-funicular-mb61.onrender.com/usuarios';
+  final String apiUrlRoles = 'https://symmetrical-funicular-mb61.onrender.com/rol'; // URL para obtener roles
 
   @override
   void initState() {
