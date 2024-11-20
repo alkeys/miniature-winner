@@ -17,7 +17,7 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
   final TextEditingController _registerPasswordController = TextEditingController();
   final TextEditingController _registerNameController = TextEditingController();
   final TextEditingController _registerLastNameController = TextEditingController();
-  final String apiUrl1 = 'http://127.0.0.1:8000';
+  final String apiUrl1 = 'https://symmetrical-funicular-mb61.onrender.com';
 
   bool _isLoading = false;
 
