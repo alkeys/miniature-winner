@@ -1,0 +1,27 @@
+[build]
+# Directorio base
+base = "/"
+
+# Comando de construcción
+command = """
+  # Crear un directorio para Flutter dentro del repositorio
+  mkdir -p $HOME/flutter
+
+  # Clonar el repositorio de Flutter en el directorio creado
+  git clone https://github.com/flutter/flutter.git $HOME/flutter
+
+  # Agregar Flutter al PATH
+  export PATH="$HOME/flutter/bin:$PATH"
+
+  # Verificar la instalación de Flutter
+  flutter doctor
+
+  # Instalar las dependencias del proyecto
+  flutter pub get
+
+  # Construir la aplicación para la web
+  flutter build web
+"""
+
+# Directorio de salida donde Netlify buscará los archivos construidos
+publish = "build/web"
