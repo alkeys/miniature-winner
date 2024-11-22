@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:gojo/screens/Admin/BitacorasScreen.dart';
+import 'package:gojo/screens/Admin/GasolineraScreen.dart';
+import 'package:gojo/screens/Admin/ProyectoScreen.dart';
 import 'package:gojo/screens/Admin/UsuariosScreen.dart';
 import 'package:gojo/screens/Admin/VehiculosScreen.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -19,6 +23,7 @@ class MyApp extends StatelessWidget {
         '/bitacoras': (context) => BitacorasScreen(),
         '/vehiculos': (context) => VehiculosScreen(),
         '/proyectos': (context) => ProyectosScreen(),
+        '/gasolinera': (context) => GasolinerasScreen(),
       },
     );
   }
@@ -42,6 +47,7 @@ class AdminScreen extends StatelessWidget {
           _buildAdminButton(context, 'Bitácoras', Icons.book, '/bitacoras'),
           _buildAdminButton(context, 'Vehículos', Icons.directions_car, '/vehiculos'),
           _buildAdminButton(context, 'Proyectos', Icons.work, '/proyectos'),
+          _buildAdminButton(context, 'Gasolinera', Icons.gas_meter, '/gasolinera'),
           // Agrega más botones aquí
         ],
       ),
@@ -68,25 +74,3 @@ class AdminScreen extends StatelessWidget {
   }
 }
 
-
-class BitacorasScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Bitácoras')),
-      body: Center(child: Text('Gestión de Bitácoras')),
-    );
-  }
-}
-
-
-
-class ProyectosScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Proyectos')),
-      body: Center(child: Text('Gestión de Proyectos')),
-    );
-  }
-}

@@ -30,6 +30,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_datetime_picker: ^1.5.1 # Para seleccionar fechas
+  syncfusion_flutter_datagrid: ^20.3.0 # Para tablas
+  pdf: ^3.10.0 # Para generar PDF (opcional)
+  excel: ^2.0.6 # Para exportar Excel (opcional)
   cupertino_icons: ^1.0.8
   http: ^1.2.2 # Cambia a esta versión compatible
   shared_preferences: ^2.0.18

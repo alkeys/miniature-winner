@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gojo/screens/Admin/BitacorasScreen.dart';
+import 'package:gojo/screens/Admin/GasolineraScreen.dart';
+import 'package:gojo/screens/Admin/ProyectoScreen.dart';
 import 'package:gojo/screens/Admin/UsuariosScreen.dart';
 import 'package:gojo/screens/Admin/VehiculosScreen.dart';
 import 'package:gojo/screens/AdminScreen.dart';
@@ -27,6 +30,7 @@ class MyApp extends StatelessWidget {
         '/bitacoras': (context) => BitacorasScreen(),
         '/vehiculos': (context) => VehiculosScreen(),
         '/proyectos': (context) => ProyectosScreen(),
+        '/gasolinera': (context) => GasolinerasScreen(),
 
 
       },
