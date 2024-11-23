@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gojo/screens/Admin/BitacorasScreen.dart';
 import 'package:gojo/screens/Admin/GasolineraScreen.dart';
+import 'package:gojo/screens/Admin/LogsScreen.dart';
 import 'package:gojo/screens/Admin/ProyectoScreen.dart';
+import 'package:gojo/screens/Admin/RolsScreen.dart';
 import 'package:gojo/screens/Admin/UsuariosScreen.dart';
 import 'package:gojo/screens/Admin/VehiculosScreen.dart';
 import 'package:gojo/screens/AdminScreen.dart';
@@ -28,9 +30,11 @@ class MyApp extends StatelessWidget {
         '/bitacora/create': (context) => CreateBitacoraScreen(),
         '/usuarios': (context) => UsuariosScreen(),
         '/bitacoras': (context) => BitacorasScreen(),
+        '/Logs': (context) => LogsScreen(),
         '/vehiculos': (context) => VehiculosScreen(),
         '/proyectos': (context) => ProyectosScreen(),
         '/gasolinera': (context) => GasolinerasScreen(),
+        '/Rols': (context) => RolesScreen(),
 
 
       },

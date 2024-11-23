@@ -250,69 +250,77 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
     );
   }
 
-  Widget _buildUsuarioDialog({required String title, required VoidCallback onSave}) {
-    return AlertDialog(
-      title: Text(title),
-      content: SingleChildScrollView(
-        child: Column(
-          children: [
-            TextField(
-              controller: _nombreController,
-              decoration: InputDecoration(labelText: 'Nombre'),
-            ),
-            TextField(
-              controller: _apellidoController,
-              decoration: InputDecoration(labelText: 'Apellido'),
-            ),
-            TextField(
-              controller: _usernameController,
-              decoration: InputDecoration(labelText: 'Username'),
-            ),
-            TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Contraseña'),
-              obscureText: true,
-            ),
-          roles.isEmpty
-              ? CircularProgressIndicator() // Mostrar un indicador de carga
-              : DropdownButtonFormField<int>(
-            value: _selectedRol,
-            items: roles.map((rol) {
-              return DropdownMenuItem<int>(
-                value: rol['id_rol'], // Verifica que sea int
-                child: Text(rol['descripcion']), // Verifica que sea String
-              );
-            }).toList(),
-            onChanged: (value) {
-              setState(() {
-                _selectedRol = value;
-              });
-            },
-            decoration: InputDecoration(labelText: 'Rol'),
-          ),
+Widget _buildUsuarioDialog({required String title, required VoidCallback onSave}) {
+  bool localActivo = _activo; // Variable local para el estado del switch
 
-          SwitchListTile(
-              title: Text('Activo'),
-              value: _activo,
-              onChanged: (value) {
-                setState(() {
-                  _activo = value;
-                });
-              },
-            ),
-          ],
+  return StatefulBuilder(
+    builder: (BuildContext context, StateSetter setDialogState) {
+      return AlertDialog(
+        title: Text(title),
+        content: SingleChildScrollView(
+          child: Column(
+            children: [
+              TextField(
+                controller: _nombreController,
+                decoration: InputDecoration(labelText: 'Nombre'),
+              ),
+              TextField(
+                controller: _apellidoController,
+                decoration: InputDecoration(labelText: 'Apellido'),
+              ),
+              TextField(
+                controller: _usernameController,
+                decoration: InputDecoration(labelText: 'Username'),
+              ),
+              TextField(
+                controller: _passwordController,
+                decoration: InputDecoration(labelText: 'Contraseña'),
+                obscureText: true,
+              ),
+              roles.isEmpty
+                  ? CircularProgressIndicator()
+                  : DropdownButtonFormField<int>(
+                      value: _selectedRol,
+                      items: roles.map((rol) {
+                        return DropdownMenuItem<int>(
+                          value: rol['id_rol'],
+                          child: Text(rol['descripcion']),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedRol = value;
+                        });
+                      },
+                      decoration: InputDecoration(labelText: 'Rol'),
+                    ),
+              SwitchListTile(
+                title: Text('Activo'),
+                value: localActivo,
+                onChanged: (value) {
+                  setDialogState(() {
+                    localActivo = value; // Actualiza el estado local
+                  });
+                },
+              ),
+            ],
+          ),
         ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text('Cancelar'),
-        ),
-        ElevatedButton(
-          onPressed: onSave,
-          child: Text('Guardar'),
-        ),
-      ],
-    );
-  }
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('Cancelar'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              _activo = localActivo; // Actualiza la variable global al guardar
+              onSave();
+            },
+            child: Text('Guardar'),
+          ),
+        ],
+      );
+    },
+  );
+}
 }
