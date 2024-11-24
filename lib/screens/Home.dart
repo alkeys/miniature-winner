@@ -1,6 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart'; // Importar url_launcher
 
 class WelcomeScreen extends StatelessWidget {
+  // Método para abrir un enlace en el navegador
+  void _launchURL(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      throw 'No se pudo abrir el enlace $url';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,10 +30,10 @@ class WelcomeScreen extends StatelessWidget {
         child: Center(
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              padding: const EdgeInsets.all(20.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     "Bienvenido a",
@@ -45,44 +56,94 @@ class WelcomeScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 40),
-                  Align(
-                    alignment: Alignment.center,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushReplacementNamed(context, '/login'); // Redirige a la pantalla de inicio
-                      },
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        backgroundColor: Colors.white,
-                        elevation: 3,
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushReplacementNamed(context, '/login'); // Redirige a la pantalla de inicio
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Text(
-                        "Iniciar",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: Color(0xFF6A1B9A),
-                        ),
+                      backgroundColor: Colors.white,
+                      elevation: 3,
+                    ),
+                    child: Text(
+                      "Iniciar",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF6A1B9A),
                       ),
                     ),
                   ),
                   SizedBox(height: 30),
                   Text(
-                    "Desarrollado por Gojo Company",
+                    "Desarrollado por:",
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.white60,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white70,
                     ),
+                  ),
+                  SizedBox(height: 20),
+                  _buildContributorCard(
+                    context,
+                    name: "Alexander Aviles",
+                    githubUrl: "https://github.com/alkeys",
+                    icon: Icons.person,
+                  ),
+                  _buildContributorCard(
+                    context,
+                    name: "Gaby",
+                    githubUrl: "https://github.com/Gabym03",
+                    icon: Icons.favorite,
+                  ),
+                  _buildContributorCard(
+                    context,
+                    name: "Gochez",
+                    githubUrl: "https://github.com/Gochezzz",
+                    icon: Icons.code,
                   ),
                 ],
               ),
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  // Widget para cada contribuidor con su tarjeta
+  Widget _buildContributorCard(BuildContext context, {required String name, required String githubUrl, required IconData icon}) {
+    return Card(
+      margin: EdgeInsets.symmetric(vertical: 10),
+      color: Colors.white,
+      elevation: 5,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundColor: Color(0xFF6A1B9A),
+          child: Icon(icon, color: Colors.white),
+        ),
+        title: Text(
+          name,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFF6A1B9A),
+          ),
+        ),
+        subtitle: Text(
+          "GitHub: $githubUrl",
+          style: TextStyle(fontSize: 14, color: Colors.black54),
+        ),
+        trailing: IconButton(
+          icon: Icon(Icons.link, color: Color(0xFF6A1B9A)),
+          onPressed: () => _launchURL(githubUrl),
+        ),
+        onTap: () => _launchURL(githubUrl),
       ),
     );
   }

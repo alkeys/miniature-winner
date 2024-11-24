@@ -38,11 +38,13 @@ dependencies:
   http: ^1.2.2 # Cambia a esta versión compatible
   shared_preferences: ^2.0.18
   path_provider: ^2.0.14
+  url_launcher: ^6.1.10
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  url_launcher: ^6.1.10
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
