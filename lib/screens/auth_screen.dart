@@ -150,110 +150,317 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Autenticación'),
-        bottom: TabBar(
+ @override
+Widget build(BuildContext context) {
+  return Scaffold(
+  appBar: AppBar(
+  flexibleSpace: Container(
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        colors: [
+          const Color.fromARGB(255, 70, 37, 126),
+          const Color.fromARGB(255, 87, 48, 155),
+        ],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      ),
+    ),
+  ),
+  title: Padding(
+  padding: const EdgeInsets.only(top: 10.0, left: 16.0), // Márgenes superior e izquierdo
+  child: Text(
+    'Autenticación',
+    style: TextStyle(
+      color: Colors.purpleAccent, // Texto morado
+      fontWeight: FontWeight.bold, // Negrita
+      fontSize: 24.0, // Tamaño del texto
+    ),
+  ),
+),
+
+  bottom: PreferredSize(
+  preferredSize: Size.fromHeight(50.0), // Altura fija estándar para la TabBar
+  child: LayoutBuilder(
+    builder: (context, constraints) {
+      // Ajuste del tamaño de texto según el ancho de la pantalla
+      double fontSize = constraints.maxWidth < 600 ? 14.0 : 18.0; // Pantallas pequeñas vs grandes
+      double tabHeight = constraints.maxWidth < 600 ? 40.0 : 50.0; // Altura adaptable
+
+      return Container(
+        height: tabHeight,
+        child: TabBar(
           controller: _tabController,
+          labelColor: Colors.purpleAccent, // Color de las pestañas activas
+          unselectedLabelColor: Colors.white, // Color de las pestañas inactivas
+          indicatorColor: Colors.purpleAccent, // Indicador de pestañas activas
+          indicatorWeight: 3.0, // Grosor del indicador
+          labelStyle: TextStyle(
+            fontSize: fontSize, // Tamaño del texto adaptable
+            fontWeight: FontWeight.bold, // Negrita para las pestañas activas
+          ),
           tabs: [
             Tab(text: 'Iniciar Sesión'),
             Tab(text: 'Registro'),
           ],
         ),
+      );
+    },
+  ),
+),
+
+),
+
+
+    body: Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.deepPurple,
+            Colors.purpleAccent,
+          ],
+        ),
       ),
-      body: TabBarView(
+      child: TabBarView(
         controller: _tabController,
         children: [
           _buildLoginForm(),
           _buildRegisterForm(),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   Widget _buildLoginForm() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          TextField(
-            controller: _usernameController,
-            decoration: InputDecoration(
-              labelText: 'Nombre de usuario',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          SizedBox(height: 16.0),
-          TextField(
-            controller: _passwordController,
-            obscureText: true,
-            decoration: InputDecoration(
-              labelText: 'Contraseña',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          SizedBox(height: 24.0),
-          _isLoading
-              ? CircularProgressIndicator()
-              : ElevatedButton(
-            onPressed: _login,
-            child: Text('Iniciar Sesión'),
-          ),
-        ],
-      ),
-    );
-  }
+  return Padding(
+    padding: const EdgeInsets.all(16.0),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        LayoutBuilder(
+          builder: (context, constraints) {
+            // Ancho adaptable para el TextField
+            double textFieldWidth = constraints.maxWidth < 600 
+                ? constraints.maxWidth * 0.9 // Pantallas pequeñas (90% del ancho)
+                : 800; // Pantallas grandes (fijo en 400 px)
 
-  Widget _buildRegisterForm() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          TextField(
-            controller: _registerNameController,
-            decoration: InputDecoration(
-              labelText: 'Nombre',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          SizedBox(height: 16.0),
-          TextField(
-            controller: _registerLastNameController,
-            decoration: InputDecoration(
-              labelText: 'Apellido',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          SizedBox(height: 16.0),
-          TextField(
-            controller: _registerUsernameController,
-            decoration: InputDecoration(
-              labelText: 'Nombre de usuario',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          SizedBox(height: 16.0),
-          TextField(
-            controller: _registerPasswordController,
-            obscureText: true,
-            decoration: InputDecoration(
-              labelText: 'Contraseña',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          SizedBox(height: 24.0),
-          _isLoading
-              ? CircularProgressIndicator()
-              : ElevatedButton(
-            onPressed: _register,
-            child: Text('Registrar'),
-          ),
-        ],
-      ),
-    );
-  }
+            return SizedBox(
+              width: textFieldWidth,
+              child: TextField(
+                controller: _usernameController,
+                style: TextStyle(color: Colors.white), // Letras en blanco
+                decoration: InputDecoration(
+                  labelText: 'Nombre de usuario',
+                  labelStyle: TextStyle(color: Colors.white), // Etiqueta en blanco
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white), // Borde en blanco
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white, width: 2.0), // Borde blanco al enfocar
+                  ),
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            );
+          },
+        ),
+        SizedBox(height: 20.0),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            // Ancho adaptable para el TextField
+            double textFieldWidth = constraints.maxWidth < 600 
+                ? constraints.maxWidth * 0.9 // Pantallas pequeñas (90% del ancho)
+                : 800; // Pantallas grandes (fijo en 400 px)
+
+            return SizedBox(
+              width: textFieldWidth,
+              child: TextField(
+                controller: _passwordController,
+                style: TextStyle(color: Colors.white), // Letras en blanco
+                obscureText: true, // Oculta la contraseña
+                decoration: InputDecoration(
+                  labelText: 'Contraseña',
+                  labelStyle: TextStyle(color: Colors.white), // Etiqueta en blanco
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white), // Borde en blanco
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white, width: 2.0), // Borde blanco al enfocar
+                  ),
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            );
+          },
+        ),
+        SizedBox(height: 40.0),
+        _isLoading
+            ? CircularProgressIndicator()
+            : LayoutBuilder(
+                builder: (context, constraints) {
+                  // Ancho adaptable para el botón
+                  double buttonWidth = constraints.maxWidth < 600 
+                      ? constraints.maxWidth * 0.8 // Para pantallas pequeñas
+                      : 400; // Para pantallas grandes
+
+                  return SizedBox(
+                    width: buttonWidth, // Ancho del botón
+                    height: 50, // Altura fija
+                    child: ElevatedButton(
+                      onPressed: _login,
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0), // Bordes redondeados
+                        ),
+                        backgroundColor: Colors.purple, // Color del botón
+                      ),
+                      child: Text(
+                        'Iniciar Sesión',
+                        style: TextStyle(
+                          fontSize: 18.0, // Tamaño del texto
+                          color: Colors.white, // Color del texto
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+      ],
+    ),
+  );
+}
+
+Widget _buildRegisterForm() {
+  return Padding(
+    padding: const EdgeInsets.all(16.0),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        LayoutBuilder(
+          builder: (context, constraints) {
+            double textFieldWidth = constraints.maxWidth < 600
+                ? constraints.maxWidth * 0.9 // Pantallas pequeñas
+                : 800; // Pantallas grandes
+
+            return Column(
+              children: [
+                SizedBox(
+                  width: textFieldWidth,
+                  child: TextField(
+                    controller: _registerNameController,
+                    style: TextStyle(color: Colors.white), // Letras en blanco
+                    decoration: InputDecoration(
+                      labelText: 'Nombre',
+                      labelStyle: TextStyle(color: Colors.white), // Etiqueta en blanco
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white), // Borde blanco
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white, width: 2.0), // Borde blanco al enfocar
+                      ),
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 16.0),
+                SizedBox(
+                  width: textFieldWidth,
+                  child: TextField(
+                    controller: _registerLastNameController,
+                    style: TextStyle(color: Colors.white), // Letras en blanco
+                    decoration: InputDecoration(
+                      labelText: 'Apellido',
+                      labelStyle: TextStyle(color: Colors.white), // Etiqueta en blanco
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white), // Borde blanco
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white, width: 2.0), // Borde blanco al enfocar
+                      ),
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 16.0),
+                SizedBox(
+                  width: textFieldWidth,
+                  child: TextField(
+                    controller: _registerUsernameController,
+                    style: TextStyle(color: Colors.white), // Letras en blanco
+                    decoration: InputDecoration(
+                      labelText: 'Nombre de usuario',
+                      labelStyle: TextStyle(color: Colors.white), // Etiqueta en blanco
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white), // Borde blanco
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white, width: 2.0), // Borde blanco al enfocar
+                      ),
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 16.0),
+                SizedBox(
+                  width: textFieldWidth,
+                  child: TextField(
+                    controller: _registerPasswordController,
+                    style: TextStyle(color: Colors.white), // Letras en blanco
+                    obscureText: true, // Ocultar contraseña
+                    decoration: InputDecoration(
+                      labelText: 'Contraseña',
+                      labelStyle: TextStyle(color: Colors.white), // Etiqueta en blanco
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white), // Borde blanco
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white, width: 2.0), // Borde blanco al enfocar
+                      ),
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+        SizedBox(height: 40.0),
+        _isLoading
+            ? CircularProgressIndicator()
+            : LayoutBuilder(
+                builder: (context, constraints) {
+                  double buttonWidth = constraints.maxWidth < 600
+                      ? constraints.maxWidth * 0.8 // Botón adaptable en pantallas pequeñas
+                      : 400; // Botón fijo en pantallas grandes
+
+                  return SizedBox(
+                    width: buttonWidth,
+                    height: 50, // Altura fija
+                    child: ElevatedButton(
+                      onPressed: _register,
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0), // Bordes redondeados
+                        ),
+                        backgroundColor: Colors.purple, // Color del botón
+                      ),
+                      child: Text(
+                        'Registrar',
+                        style: TextStyle(
+                          fontSize: 18.0, // Tamaño del texto
+                          color: Colors.white, // Color del texto
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+      ],
+    ),
+  );
+}
+
 }
