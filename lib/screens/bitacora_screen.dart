@@ -35,9 +35,16 @@ class _BitacoraScreenState extends State<BitacoraScreen> {
 
   Future<void> _loadUserId() async {
     final prefs = await SharedPreferences.getInstance();
+    _userId = prefs.getInt('userId') ?? 0; // Cargar el ID del usuario
+    _role = prefs.getInt('rol') ?? 0; // Cargar el rol del usuario
+
+    if (_userId == 0 || _role == 0) {
+      // Redirigir al login si no hay usuario logueado
+      Navigator.pushReplacementNamed(context, '/');
+      return;
+    }
+
     setState(() {
-      _userId = prefs.getInt('userId') ?? 0; // Cargar el ID del usuario
-      _role = prefs.getInt('rol') ?? 0; // Cargar el rol del usuario
       print('ID de usuario y rol es : $_userId $_role');
       _bitacoras = _fetchFilteredBitacoras(); // Actualizar la lista de bitácoras
     });
@@ -68,6 +75,7 @@ class _BitacoraScreenState extends State<BitacoraScreen> {
               // Cerrar sesión
               final prefs = await SharedPreferences.getInstance();
               await prefs.remove('userId');
+              await prefs.remove('rol');
               Navigator.pushReplacementNamed(context, '/'); // Regresar al login
             },
           ),

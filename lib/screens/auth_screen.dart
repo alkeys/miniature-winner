@@ -65,6 +65,7 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
         // Guardar el ID del usuario en SharedPreferences
         final prefs = await SharedPreferences.getInstance();
         await prefs.setInt('userId', userId);
+        await prefs.setInt('rol', rol);
 
 
         // Navegar a la pantalla de Bitácora

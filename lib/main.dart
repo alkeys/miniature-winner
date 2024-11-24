@@ -7,6 +7,7 @@ import 'package:gojo/screens/Admin/RolsScreen.dart';
 import 'package:gojo/screens/Admin/UsuariosScreen.dart';
 import 'package:gojo/screens/Admin/VehiculosScreen.dart';
 import 'package:gojo/screens/AdminScreen.dart';
+import 'package:gojo/screens/Home.dart';
 import 'package:gojo/screens/bitacora_screen.dart';
 import 'package:gojo/screens/create_bitacora_screen.dart';
 import 'screens/auth_screen.dart';
@@ -20,11 +21,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Autenticación',
+      title: 'Bienbenido a Software de Proyecto',
       theme: ThemeData(primarySwatch: Colors.blue),
       initialRoute: '/',
       routes: {
-        '/': (context) => AuthScreen(),
+        '/': (context) => WelcomeScreen(),
         '/admin': (context) => AdminScreen(),
         '/bitacora': (context) => BitacoraScreen(),
         '/bitacora/create': (context) => CreateBitacoraScreen(),
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
         '/proyectos': (context) => ProyectosScreen(),
         '/gasolinera': (context) => GasolinerasScreen(),
         '/Rols': (context) => RolesScreen(),
-
+        '/login' : (context) => AuthScreen(),
 
       },
 
