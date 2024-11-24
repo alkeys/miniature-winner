@@ -96,7 +96,7 @@ class WelcomeScreen extends StatelessWidget {
                   ),
                   _buildContributorCard(
                     context,
-                    name: "Gaby",
+                    name: "Gabriela Martínez",
                     githubUrl: "https://github.com/Gabym03",
                     icon: Icons.favorite,
                   ),
@@ -122,28 +122,57 @@ class WelcomeScreen extends StatelessWidget {
       color: Colors.white,
       elevation: 5,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: Color(0xFF6A1B9A),
-          child: Icon(icon, color: Colors.white),
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Row(
+          children: [
+            CircleAvatar(
+              backgroundColor: Color(0xFF6A1B9A),
+              child: Icon(icon, color: Colors.white),
+            ),
+            SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF6A1B9A),
+                    ),
+                  ),
+                  Text(
+                    "GitHub",
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.black54,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            TextButton(
+              onPressed: () => _launchURL(githubUrl),
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                backgroundColor: Color(0xFF6A1B9A).withOpacity(0.1),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Text(
+                "Abrir",
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xFF6A1B9A),
+                ),
+              ),
+            ),
+          ],
         ),
-        title: Text(
-          name,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF6A1B9A),
-          ),
-        ),
-        subtitle: Text(
-          "GitHub: $githubUrl",
-          style: TextStyle(fontSize: 14, color: Colors.black54),
-        ),
-        trailing: IconButton(
-          icon: Icon(Icons.link, color: Color(0xFF6A1B9A)),
-          onPressed: () => _launchURL(githubUrl),
-        ),
-        onTap: () => _launchURL(githubUrl),
       ),
     );
   }
