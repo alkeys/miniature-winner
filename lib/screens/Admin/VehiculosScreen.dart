@@ -34,7 +34,6 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
     super.dispose();
   }
 
-  // Obtener vehículos desde la API
   Future<void> _fetchVehiculos() async {
     try {
       final response = await http.get(Uri.parse(apiUrlVehiculos));
@@ -50,7 +49,6 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
     }
   }
 
-  // Agregar un vehículo
   Future<void> _addVehiculo(Map<String, dynamic> nuevoVehiculo) async {
     try {
       final response = await http.post(
@@ -69,7 +67,6 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
     }
   }
 
-  // Editar un vehículo
   Future<void> _editVehiculo(int id, Map<String, dynamic> updatedVehiculo) async {
     try {
       final response = await http.put(
@@ -88,7 +85,6 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
     }
   }
 
-  // Eliminar un vehículo
   Future<void> _deleteVehiculo(int id) async {
     try {
       final response = await http.delete(Uri.parse('$apiUrlVehiculos$id'));
@@ -103,7 +99,6 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
     }
   }
 
-  // Mostrar mensaje de éxito
   void _showSuccess(String message) {
     showDialog(
       context: context,
@@ -122,13 +117,12 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
     );
   }
 
-  // Mostrar mensaje de error
   void _showError(String message) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Error'),
+          title: Text('Error', style: TextStyle(color: Colors.red)),
           content: Text(message),
           actions: [
             TextButton(
@@ -146,48 +140,61 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Gestión de Vehículos'),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: vehiculos.length,
-              itemBuilder: (context, index) {
-                final vehiculo = vehiculos[index];
-                return ListTile(
-                  title: Text('${vehiculo['modelo']} - ${vehiculo['marca']}'),
-                  subtitle: Text('Placa: ${vehiculo['placa']} | Tipo: ${vehiculo['tipo_combustible']}'),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.edit, color: Colors.blue),
-                        onPressed: () {
-                          _showEditVehiculoDialog(vehiculo);
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.delete, color: Colors.red),
-                        onPressed: () {
-                          _deleteVehiculo(vehiculo['id_vehiculo']);
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-          ElevatedButton(
+        backgroundColor: Colors.teal,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add),
             onPressed: _showAddVehiculoDialog,
-            child: Text('Agregar Vehículo'),
+            tooltip: 'Agregar Vehículo',
           ),
         ],
+      ),
+      body: vehiculos.isEmpty
+          ? Center(
+        child: CircularProgressIndicator(),
+      )
+          : Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ListView.builder(
+          itemCount: vehiculos.length,
+          itemBuilder: (context, index) {
+            final vehiculo = vehiculos[index];
+            return Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              elevation: 3,
+              margin: EdgeInsets.symmetric(vertical: 6),
+              child: ListTile(
+                title: Text(
+                  '${vehiculo['modelo']} - ${vehiculo['marca']}',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                subtitle: Text(
+                  'Placa: ${vehiculo['placa']} | Tipo: ${vehiculo['tipo_combustible']}',
+                  style: TextStyle(color: Colors.grey[600]),
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.edit, color: Colors.blue),
+                      onPressed: () => _showEditVehiculoDialog(vehiculo),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.delete, color: Colors.red),
+                      onPressed: () => _deleteVehiculo(vehiculo['id_vehiculo']),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
 
-  // Diálogo para agregar vehículo
   void _showAddVehiculoDialog() {
     _modeloController.clear();
     _marcaController.clear();
@@ -209,7 +216,10 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
             final galonaje = double.tryParse(_galonajeController.text.trim()) ?? 0.0;
             final tipoCombustible = _tipoCombustibleController.text.trim();
 
-            if (modelo.isNotEmpty && marca.isNotEmpty && placa.isNotEmpty && tipoCombustible.isNotEmpty) {
+            if (modelo.isNotEmpty &&
+                marca.isNotEmpty &&
+                placa.isNotEmpty &&
+                tipoCombustible.isNotEmpty) {
               _addVehiculo({
                 'modelo': modelo,
                 'marca': marca,
@@ -228,7 +238,6 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
     );
   }
 
-  // Diálogo para editar vehículo
   void _showEditVehiculoDialog(Map<String, dynamic> vehiculo) {
     _modeloController.text = vehiculo['modelo'];
     _marcaController.text = vehiculo['marca'];
@@ -250,7 +259,10 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
             final galonaje = double.tryParse(_galonajeController.text.trim()) ?? 0.0;
             final tipoCombustible = _tipoCombustibleController.text.trim();
 
-            if (modelo.isNotEmpty && marca.isNotEmpty && placa.isNotEmpty && tipoCombustible.isNotEmpty) {
+            if (modelo.isNotEmpty &&
+                marca.isNotEmpty &&
+                placa.isNotEmpty &&
+                tipoCombustible.isNotEmpty) {
               _editVehiculo(vehiculo['id_vehiculo'], {
                 'modelo': modelo,
                 'marca': marca,
@@ -269,10 +281,10 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
     );
   }
 
-  // Diálogo base para agregar/editar vehículo
   Widget _buildVehiculoDialog({required String title, required VoidCallback onSave}) {
     return AlertDialog(
-      title: Text(title),
+      title: Text(title, style: TextStyle(color: Colors.teal)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       content: SingleChildScrollView(
         child: Column(
           children: [
@@ -312,6 +324,9 @@ class _VehiculosScreenState extends State<VehiculosScreen> {
         ),
         ElevatedButton(
           onPressed: onSave,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.teal,
+          ),
           child: Text('Guardar'),
         ),
       ],
