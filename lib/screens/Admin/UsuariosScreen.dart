@@ -232,16 +232,23 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
             final nombre = _nombreController.text;
             final apellido = _apellidoController.text;
             final username = _usernameController.text;
+            final nuevaPassword = _passwordController.text;
 
             if (nombre.isNotEmpty && apellido.isNotEmpty && username.isNotEmpty && _selectedRol != null) {
-              _editUsuario(usuario['id_usr'], {
+              final updatedUsuario = {
                 'nombre': nombre,
                 'apellido': apellido,
-                'password': usuario['password'], // Mantener contraseña previa
                 'username': username,
                 'id_rol': _selectedRol,
                 'activo': _activo,
-              });
+              };
+
+              // Solo incluye la contraseña si se ha ingresado
+              if (nuevaPassword.isNotEmpty) {
+                updatedUsuario['password'] = nuevaPassword;
+              }
+
+              _editUsuario(usuario['id_usr'], updatedUsuario);
             }
             Navigator.of(context).pop();
           },
@@ -249,6 +256,7 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
       },
     );
   }
+
 
 Widget _buildUsuarioDialog({required String title, required VoidCallback onSave}) {
   bool localActivo = _activo; // Variable local para el estado del switch
@@ -324,3 +332,5 @@ Widget _buildUsuarioDialog({required String title, required VoidCallback onSave}
   );
 }
 }
+
+

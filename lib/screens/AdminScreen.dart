@@ -1,14 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gojo/screens/Admin/BitacorasScreen.dart';
-import 'package:gojo/screens/Admin/GasolineraScreen.dart';
-import 'package:gojo/screens/Admin/LogsScreen.dart';
-import 'package:gojo/screens/Admin/ProyectoScreen.dart';
-import 'package:gojo/screens/Admin/RolsScreen.dart';
-import 'package:gojo/screens/Admin/UsuariosScreen.dart';
-import 'package:gojo/screens/Admin/VehiculosScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'auth_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -22,19 +13,56 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(primarySwatch: Colors.blue),
       routes: {
         '/admin': (context) => AdminScreen(),
-        '/usuarios': (context) => UsuariosScreen(),
-        '/bitacoras': (context) => BitacorasScreen(),
-        '/Logs': (context) => LogsScreen(),
-        '/vehiculos': (context) => VehiculosScreen(),
-        '/proyectos': (context) => ProyectosScreen(),
-        '/gasolinera': (context) => GasolinerasScreen(),
-        '/Rols': (context) => RolesScreen(),
+        '/usuarios': (context) => PlaceholderScreen('Usuarios'),
+        '/bitacoras': (context) => PlaceholderScreen('Bitácoras'),
+        '/Logs': (context) => PlaceholderScreen('Logs'),
+        '/vehiculos': (context) => PlaceholderScreen('Vehículos'),
+        '/proyectos': (context) => PlaceholderScreen('Proyectos'),
+        '/gasolinera': (context) => PlaceholderScreen('Gasolinera'),
+        '/Rols': (context) => PlaceholderScreen('Roles'),
       },
     );
   }
 }
 
-class AdminScreen extends StatelessWidget {
+class AdminScreen extends StatefulWidget {
+  @override
+  _AdminScreenState createState() => _AdminScreenState();
+}
+
+class _AdminScreenState extends State<AdminScreen> {
+  int _selectedIndex = 0;
+
+  final List<String> _titles = [
+    'Usuarios',
+    'Bitácoras',
+    'Logs',
+    'Vehículos',
+    'Proyectos',
+    'Gasolinera',
+    'Roles',
+  ];
+
+  final List<IconData> _icons = [
+    Icons.person,
+    Icons.book,
+    Icons.login,
+    Icons.directions_car,
+    Icons.work,
+    Icons.gas_meter,
+    Icons.task_sharp,
+  ];
+
+  final List<String> _routes = [
+    '/usuarios',
+    '/bitacoras',
+    '/Logs',
+    '/vehiculos',
+    '/proyectos',
+    '/gasolinera',
+    '/Rols',
+  ];
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<int?>(
@@ -47,7 +75,6 @@ class AdminScreen extends StatelessWidget {
         }
 
         if (snapshot.hasData && snapshot.data == 2) {
-          // Si el usuario es administrador, mostrar la pantalla
           return Scaffold(
             appBar: AppBar(
               title: Text('Admin Panel'),
@@ -61,26 +88,17 @@ class AdminScreen extends StatelessWidget {
                 ),
               ],
             ),
-            body: GridView.count(
-              crossAxisCount: 2,
-              padding: EdgeInsets.all(16),
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
+            body: Column(
               children: [
-                _buildAdminButton(context, 'Usuarios', Icons.person, '/usuarios'),
-                _buildAdminButton(context, 'Bitácoras', Icons.book, '/bitacoras'),
-                _buildAdminButton(context, 'Logs', Icons.login, '/Logs'),
-                _buildAdminButton(context, 'Vehículos', Icons.directions_car, '/vehiculos'),
-                _buildAdminButton(context, 'Proyectos', Icons.work, '/proyectos'),
-                _buildAdminButton(context, 'Gasolinera', Icons.gas_meter, '/gasolinera'),
-                _buildAdminButton(context, 'Roles', Icons.task_sharp, '/Rols'),
-                // Agrega más botones aquí
+                _buildHeader(), // Barra superior con navegación
+                Expanded(
+                  child: _buildContent(context), // Contenido dinámico
+                ),
               ],
             ),
           );
         }
 
-        // Si no es administrador, mostrar un mensaje de acceso denegado
         return Scaffold(
           appBar: AppBar(
             title: Text("Acceso Denegado"),
@@ -97,36 +115,111 @@ class AdminScreen extends StatelessWidget {
     );
   }
 
-  // Método para obtener el rol del usuario desde SharedPreferences
-  Future<int?> _getUserRole() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getInt('rol');
+  Widget _buildHeader() {
+    return Container(
+      color: Colors.blue[50],
+      padding: EdgeInsets.symmetric(vertical: 8),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: List.generate(_titles.length, (index) {
+            return GestureDetector(
+              onTap: () {
+                setState(() {
+                  _selectedIndex = index; // Actualiza el índice seleccionado
+                });
+              },
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 8),
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                decoration: BoxDecoration(
+                  color: _selectedIndex == index
+                      ? Colors.blue[300]
+                      : Colors.blue[100],
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      _icons[index],
+                      size: 20,
+                      color: _selectedIndex == index
+                          ? Colors.white
+                          : Colors.blue[900],
+                    ),
+                    SizedBox(width: 8),
+                    Text(
+                      _titles[index],
+                      style: TextStyle(
+                        color: _selectedIndex == index
+                            ? Colors.white
+                            : Colors.blue[900],
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }),
+        ),
+      ),
+    );
   }
 
-  // Método para construir los botones del panel de administración
-  Widget _buildAdminButton(BuildContext context, String title, IconData icon, String route) {
-    return ElevatedButton(
-      onPressed: () {
-        Navigator.pushNamed(context, route);
-      },
-      style: ElevatedButton.styleFrom(
-        padding: EdgeInsets.all(16),
-      ),
+  Widget _buildContent(BuildContext context) {
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 40),
-          SizedBox(height: 10),
-          Text(title, textAlign: TextAlign.center),
+          Icon(
+            _icons[_selectedIndex],
+            size: 100,
+            color: Colors.blue[800],
+          ),
+          SizedBox(height: 16),
+          Text(
+            _titles[_selectedIndex],
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.blue[900],
+            ),
+          ),
+          SizedBox(height: 8),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pushNamed(context, _routes[_selectedIndex]);
+            },
+            child: Text('Ir a ${_titles[_selectedIndex]}'),
+          ),
         ],
       ),
     );
   }
 
-  // Método para cerrar sesión
+  Future<int?> _getUserRole() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('rol');
+  }
+
   Future<void> _logout(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.clear(); // Limpia todos los datos guardados en SharedPreferences
-    Navigator.pushReplacementNamed(context, '/'); // Regresar al login
+    await prefs.clear();
+    Navigator.pushReplacementNamed(context, '/');
+  }
+}
+
+class PlaceholderScreen extends StatelessWidget {
+  final String title;
+  const PlaceholderScreen(this.title);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(title)),
+      body: Center(child: Text('Bienvenido a la sección de $title')),
+    );
   }
 }
