@@ -48,7 +48,7 @@ class _RolesScreenState extends State<RolesScreen> {
         headers: {'Content-Type': 'application/json'},
         body: json.encode(nuevoRol),
       );
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         _showSuccess('Rol creado exitosamente.');
         _fetchRoles();
       } else {
