@@ -14,7 +14,7 @@ class _BitacoraScreenState extends State<BitacoraScreen> {
   late Future<List<Bitacora>> _bitacoras;
   late int _userId;
   late int _role;
-  Timer? _timer; // Timer para actualizar automáticamente
+  Timer? _timer;
 
   @override
   void initState() {
@@ -22,31 +22,28 @@ class _BitacoraScreenState extends State<BitacoraScreen> {
     _loadUserId();
 
     _timer = Timer.periodic(Duration(seconds: 30), (timer) {
-      _refreshList(); // Actualizar la lista de bitácoras
+      _refreshList();
     });
   }
 
   @override
   void dispose() {
-    // Cancelar el Timer al salir de la pantalla
     _timer?.cancel();
     super.dispose();
   }
 
   Future<void> _loadUserId() async {
     final prefs = await SharedPreferences.getInstance();
-    _userId = prefs.getInt('userId') ?? 0; // Cargar el ID del usuario
-    _role = prefs.getInt('rol') ?? 0; // Cargar el rol del usuario
+    _userId = prefs.getInt('userId') ?? 0;
+    _role = prefs.getInt('rol') ?? 0;
 
     if (_userId == 0 || _role == 0) {
-      // Redirigir al login si no hay usuario logueado
       Navigator.pushReplacementNamed(context, '/');
       return;
     }
 
     setState(() {
-      print('ID de usuario y rol es : $_userId $_role');
-      _bitacoras = _fetchFilteredBitacoras(); // Actualizar la lista de bitácoras
+      _bitacoras = _fetchFilteredBitacoras();
     });
   }
 
@@ -54,12 +51,12 @@ class _BitacoraScreenState extends State<BitacoraScreen> {
     if (_userId == 0) {
       throw Exception('ID de usuario no encontrado');
     }
-    return await _service.getBitacorasByUser(_userId); // Obtener bitácoras filtradas por usuario
+    return await _service.getBitacorasByUser(_userId);
   }
 
   void _refreshList() {
     setState(() {
-      _bitacoras = _fetchFilteredBitacoras(); // Recargar solo las bitácoras del usuario actual
+      _bitacoras = _fetchFilteredBitacoras();
     });
   }
 
@@ -67,16 +64,18 @@ class _BitacoraScreenState extends State<BitacoraScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Bitácoras'),
+        title: Text(
+          'Bitácoras',
+          style: TextStyle(color: Colors.blue),
+        ),
         actions: [
           IconButton(
-            icon: Icon(Icons.logout),
+            icon: Icon(Icons.logout, color: Colors.blue),
             onPressed: () async {
-              // Cerrar sesión
               final prefs = await SharedPreferences.getInstance();
               await prefs.remove('userId');
               await prefs.remove('rol');
-              Navigator.pushReplacementNamed(context, '/'); // Regresar al login
+              Navigator.pushReplacementNamed(context, '/');
             },
           ),
         ],
@@ -87,11 +86,21 @@ class _BitacoraScreenState extends State<BitacoraScreen> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(
+              child: Text(
+                'Error: ${snapshot.error}',
+                style: TextStyle(color: Colors.red, fontSize: 16),
+              ),
+            );
           } else if (snapshot.hasData) {
             final bitacoras = snapshot.data!;
             if (bitacoras.isEmpty) {
-              return Center(child: Text('No se encontraron bitácoras'));
+              return Center(
+                child: Text(
+                  'No se encontraron bitácoras',
+                  style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                ),
+              );
             }
             return ListView.builder(
               itemCount: bitacoras.length,
@@ -99,15 +108,34 @@ class _BitacoraScreenState extends State<BitacoraScreen> {
                 final bitacora = bitacoras[index];
                 return Card(
                   margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 4,
                   child: ListTile(
-                    title: Text(bitacora.comentario),
+                    contentPadding: EdgeInsets.symmetric(
+                        vertical: 8, horizontal: 16), // Más espacio interno
+                    title: Text(
+                      bitacora.comentario,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Colors.blue[900],
+                      ),
+                    ),
                     subtitle: Text(
                       'KM Inicial: ${bitacora.kmInicial}, KM Final: ${bitacora.kmFinal}',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[600],
+                      ),
                     ),
                     trailing: IconButton(
-                      icon: Icon(Icons.delete),
+                      icon: Icon(Icons.delete, color: Colors.red[700]),
                       onPressed: () {
-                        _service.deleteBitacora(bitacora.id).then((_) => _refreshList());
+                        _service
+                            .deleteBitacora(bitacora.id)
+                            .then((_) => _refreshList());
                       },
                     ),
                   ),
@@ -115,15 +143,22 @@ class _BitacoraScreenState extends State<BitacoraScreen> {
               },
             );
           } else {
-            return Center(child: Text('No se encontraron datos'));
+            return Center(
+              child: Text(
+                'No se encontraron datos',
+                style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+              ),
+            );
           }
         },
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          Navigator.pushNamed(context, '/bitacora/create'); // Navegar a la pantalla de creación
+          Navigator.pushNamed(context, '/bitacora/create');
         },
-        child: Icon(Icons.add),
+        label: Text('Agregar'),
+        icon: Icon(Icons.add),
+        backgroundColor: Colors.blue,
       ),
     );
   }

@@ -20,6 +20,7 @@ class _CreateBitacoraScreenState extends State<CreateBitacoraScreen> {
   final TextEditingController _costoController = TextEditingController();
   final TextEditingController _tipoGasolinaController = TextEditingController();
   final String apiUrl1 = 'https://symmetrical-funicular-mb61.onrender.com';
+
   // Variables para dropdowns
   List<Map<String, dynamic>> _vehiculos = [];
   List<Map<String, dynamic>> _gasolineras = [];
@@ -39,12 +40,10 @@ class _CreateBitacoraScreenState extends State<CreateBitacoraScreen> {
 
   Future<void> _fetchDropdownData() async {
     try {
-      final vehiculosResponse =
-      await http.get(Uri.parse('$apiUrl1/vehiculos'));
+      final vehiculosResponse = await http.get(Uri.parse('$apiUrl1/vehiculos'));
       final gasolinerasResponse =
       await http.get(Uri.parse('$apiUrl1/gasolineras'));
-      final proyectosResponse =
-      await http.get(Uri.parse('$apiUrl1/proyecto'));
+      final proyectosResponse = await http.get(Uri.parse('$apiUrl1/proyecto'));
 
       if (vehiculosResponse.statusCode == 200 &&
           gasolinerasResponse.statusCode == 200 &&
@@ -97,7 +96,6 @@ class _CreateBitacoraScreenState extends State<CreateBitacoraScreen> {
       });
 
       int userId = await _getUserId();
-      print('ID del usuario autenticado: $userId');
 
       final requestBody = {
         'comentario': _comentarioController.text,
@@ -112,17 +110,12 @@ class _CreateBitacoraScreenState extends State<CreateBitacoraScreen> {
         'id_proyecto': _selectedProyecto,
       };
 
-      print('Enviando datos al servidor: $requestBody');
-
       try {
         final response = await http.post(
           Uri.parse(apiUrl),
           headers: {'Content-Type': 'application/json'},
           body: json.encode(requestBody),
         );
-
-        print('Respuesta del servidor: ${response.statusCode}');
-        print('Cuerpo de la respuesta: ${response.body}');
 
         if (response.statusCode == 200) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -136,7 +129,6 @@ class _CreateBitacoraScreenState extends State<CreateBitacoraScreen> {
           );
         }
       } catch (e) {
-        print('Error: $e');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error de conexión al servidor')),
         );
@@ -152,7 +144,6 @@ class _CreateBitacoraScreenState extends State<CreateBitacoraScreen> {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getInt('userId') ?? 0;
   }
-
 
   Widget _buildDropdown({
     required String label,
