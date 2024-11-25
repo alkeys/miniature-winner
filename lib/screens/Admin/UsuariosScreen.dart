@@ -17,8 +17,10 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
   int? _selectedRol; // Rol seleccionado
   bool _activo = true;
 
-  final String apiUrlUsuarios = 'https://symmetrical-funicular-mb61.onrender.com/usuarios';
-  final String apiUrlRoles = 'https://symmetrical-funicular-mb61.onrender.com/rol'; // URL para obtener roles
+  final String apiUrlUsuarios =
+      'https://symmetrical-funicular-mb61.onrender.com/usuarios';
+  final String apiUrlRoles =
+      'https://symmetrical-funicular-mb61.onrender.com/rol'; // URL para obtener roles
 
   @override
   void initState() {
@@ -36,7 +38,6 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
     super.dispose();
   }
 
-  // Método para obtener usuarios desde la API
   Future<void> _fetchUsuarios() async {
     try {
       final response = await http.get(Uri.parse(apiUrlUsuarios));
@@ -52,7 +53,6 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
     }
   }
 
-  // Método para obtener roles desde la API
   Future<void> _fetchRoles() async {
     try {
       final response = await http.get(Uri.parse(apiUrlRoles));
@@ -68,7 +68,6 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
     }
   }
 
-  // Método para agregar un usuario
   Future<void> _addUsuario(Map<String, dynamic> nuevoUsuario) async {
     try {
       final response = await http.post(
@@ -76,7 +75,7 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
         headers: {'Content-Type': 'application/json'},
         body: json.encode(nuevoUsuario),
       );
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         _fetchUsuarios();
       } else {
         _showError('Error al agregar usuario');
@@ -86,7 +85,6 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
     }
   }
 
-  // Método para editar un usuario
   Future<void> _editUsuario(int id, Map<String, dynamic> updatedUsuario) async {
     try {
       final response = await http.put(
@@ -104,7 +102,6 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
     }
   }
 
-  // Método para eliminar un usuario
   Future<void> _deleteUsuario(int id) async {
     try {
       final response = await http.delete(Uri.parse('$apiUrlUsuarios/$id'));
@@ -118,7 +115,6 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
     }
   }
 
-  // Mostrar un cuadro de error
   void _showError(String message) {
     showDialog(
       context: context,
@@ -142,39 +138,57 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Gestión de Usuarios'),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: usuarios.length,
-              itemBuilder: (context, index) {
-                final usuario = usuarios[index];
-                return ListTile(
-                  title: Text('${usuario['nombre']} ${usuario['apellido']}'),
-                  subtitle: Text('ID: ${usuario['id_usr']} | Username: ${usuario['username']} | Rol: ${usuario['id_rol']}'),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.edit, color: Colors.blue),
-                        onPressed: () {
-                          _showEditUsuarioDialog(usuario);
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.delete, color: Colors.red),
-                        onPressed: () {
-                          _deleteUsuario(usuario['id_usr']);
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
+        backgroundColor: Colors.teal,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: _showAddUsuarioDialog,
+            tooltip: 'Agregar Usuario',
           ),
         ],
+      ),
+      body: usuarios.isEmpty
+          ? Center(
+        child: CircularProgressIndicator(),
+      )
+          : Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ListView.builder(
+          itemCount: usuarios.length,
+          itemBuilder: (context, index) {
+            final usuario = usuarios[index];
+            return Card(
+              margin: EdgeInsets.symmetric(vertical: 6),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              elevation: 3,
+              child: ListTile(
+                title: Text(
+                  '${usuario['nombre']} ${usuario['apellido']}',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                subtitle: Text(
+                  'ID: ${usuario['id_usr']} | Usuario: ${usuario['username']} | Rol: ${usuario['id_rol']}',
+                  style: TextStyle(color: Colors.grey[700]),
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.edit, color: Colors.blue),
+                      onPressed: () => _showEditUsuarioDialog(usuario),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.delete, color: Colors.red),
+                      onPressed: () => _deleteUsuario(usuario['id_usr']),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -198,7 +212,11 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
             final password = _passwordController.text;
             final username = _usernameController.text;
 
-            if (nombre.isNotEmpty && apellido.isNotEmpty && password.isNotEmpty && username.isNotEmpty && _selectedRol != null) {
+            if (nombre.isNotEmpty &&
+                apellido.isNotEmpty &&
+                password.isNotEmpty &&
+                username.isNotEmpty &&
+                _selectedRol != null) {
               _addUsuario({
                 'nombre': nombre,
                 'apellido': apellido,
@@ -234,7 +252,10 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
             final username = _usernameController.text;
             final nuevaPassword = _passwordController.text;
 
-            if (nombre.isNotEmpty && apellido.isNotEmpty && username.isNotEmpty && _selectedRol != null) {
+            if (nombre.isNotEmpty &&
+                apellido.isNotEmpty &&
+                username.isNotEmpty &&
+                _selectedRol != null) {
               final updatedUsuario = {
                 'nombre': nombre,
                 'apellido': apellido,
@@ -243,7 +264,6 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
                 'activo': _activo,
               };
 
-              // Solo incluye la contraseña si se ha ingresado
               if (nuevaPassword.isNotEmpty) {
                 updatedUsuario['password'] = nuevaPassword;
               }
@@ -257,80 +277,81 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
     );
   }
 
+  Widget _buildUsuarioDialog(
+      {required String title, required VoidCallback onSave}) {
+    bool localActivo = _activo;
 
-Widget _buildUsuarioDialog({required String title, required VoidCallback onSave}) {
-  bool localActivo = _activo; // Variable local para el estado del switch
-
-  return StatefulBuilder(
-    builder: (BuildContext context, StateSetter setDialogState) {
-      return AlertDialog(
-        title: Text(title),
-        content: SingleChildScrollView(
-          child: Column(
-            children: [
-              TextField(
-                controller: _nombreController,
-                decoration: InputDecoration(labelText: 'Nombre'),
-              ),
-              TextField(
-                controller: _apellidoController,
-                decoration: InputDecoration(labelText: 'Apellido'),
-              ),
-              TextField(
-                controller: _usernameController,
-                decoration: InputDecoration(labelText: 'Username'),
-              ),
-              TextField(
-                controller: _passwordController,
-                decoration: InputDecoration(labelText: 'Contraseña'),
-                obscureText: true,
-              ),
-              roles.isEmpty
-                  ? CircularProgressIndicator()
-                  : DropdownButtonFormField<int>(
-                      value: _selectedRol,
-                      items: roles.map((rol) {
-                        return DropdownMenuItem<int>(
-                          value: rol['id_rol'],
-                          child: Text(rol['descripcion']),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedRol = value;
-                        });
-                      },
-                      decoration: InputDecoration(labelText: 'Rol'),
-                    ),
-              SwitchListTile(
-                title: Text('Activo'),
-                value: localActivo,
-                onChanged: (value) {
-                  setDialogState(() {
-                    localActivo = value; // Actualiza el estado local
-                  });
-                },
-              ),
-            ],
+    return StatefulBuilder(
+      builder: (BuildContext context, StateSetter setDialogState) {
+        return AlertDialog(
+          title: Text(title),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text('Cancelar'),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                TextField(
+                  controller: _nombreController,
+                  decoration: InputDecoration(labelText: 'Nombre'),
+                ),
+                TextField(
+                  controller: _apellidoController,
+                  decoration: InputDecoration(labelText: 'Apellido'),
+                ),
+                TextField(
+                  controller: _usernameController,
+                  decoration: InputDecoration(labelText: 'Usuario'),
+                ),
+                TextField(
+                  controller: _passwordController,
+                  decoration: InputDecoration(labelText: 'Contraseña'),
+                  obscureText: true,
+                ),
+                roles.isEmpty
+                    ? CircularProgressIndicator()
+                    : DropdownButtonFormField<int>(
+                  value: _selectedRol,
+                  items: roles.map((rol) {
+                    return DropdownMenuItem<int>(
+                      value: rol['id_rol'],
+                      child: Text(rol['descripcion']),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setDialogState(() {
+                      _selectedRol = value;
+                    });
+                  },
+                  decoration: InputDecoration(labelText: 'Rol'),
+                ),
+                SwitchListTile(
+                  title: Text('Activo'),
+                  value: localActivo,
+                  onChanged: (value) {
+                    setDialogState(() {
+                      localActivo = value;
+                    });
+                  },
+                ),
+              ],
+            ),
           ),
-          ElevatedButton(
-            onPressed: () {
-              _activo = localActivo; // Actualiza la variable global al guardar
-              onSave();
-            },
-            child: Text('Guardar'),
-          ),
-        ],
-      );
-    },
-  );
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Cancelar'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                _activo = localActivo;
+                onSave();
+              },
+              child: Text('Guardar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
-}
-
-
