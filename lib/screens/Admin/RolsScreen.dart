@@ -33,7 +33,7 @@ class _RolesScreenState extends State<RolesScreen> {
           roles = List<Map<String, dynamic>>.from(json.decode(response.body));
         });
       } else {
-        _showError('Error al obtener roles');
+        _showError('Error al obtener roles: ${response.statusCode}');
       }
     } catch (e) {
       _showError('Error de conexión: $e');
@@ -48,7 +48,7 @@ class _RolesScreenState extends State<RolesScreen> {
         headers: {'Content-Type': 'application/json'},
         body: json.encode(nuevoRol),
       );
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         _showSuccess('Rol creado exitosamente.');
         _fetchRoles();
       } else {
@@ -136,32 +136,39 @@ class _RolesScreenState extends State<RolesScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Gestión de Roles'),
+        backgroundColor: Colors.teal,
       ),
       body: Column(
         children: [
           Expanded(
-            child: ListView.builder(
+            child: roles.isEmpty
+                ? Center(child: CircularProgressIndicator())
+                : ListView.builder(
               itemCount: roles.length,
               itemBuilder: (context, index) {
                 final rol = roles[index];
-                return ListTile(
-                  title: Text('${rol['descripcion']}'),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.edit, color: Colors.blue),
-                        onPressed: () {
-                          _showEditRolDialog(rol);
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.delete, color: Colors.red),
-                        onPressed: () {
-                          _deleteRol(rol['idRol']);
-                        },
-                      ),
-                    ],
+                return Card(
+                  margin: EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: ListTile(
+                    title: Text('${rol['descripcion']}'),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.edit, color: Colors.blue),
+                          onPressed: () => _showEditRolDialog(rol),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          onPressed: () {
+                            _deleteRol(rol['id_rol']); // Asegúrate de que la clave sea la correcta
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
@@ -170,6 +177,9 @@ class _RolesScreenState extends State<RolesScreen> {
           ElevatedButton(
             onPressed: _showAddRolDialog,
             child: Text('Agregar Rol'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.teal,
+            ),
           ),
         ],
       ),
@@ -205,6 +215,7 @@ class _RolesScreenState extends State<RolesScreen> {
                 }
               },
               child: Text('Guardar'),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.teal),
             ),
           ],
         );
@@ -234,13 +245,14 @@ class _RolesScreenState extends State<RolesScreen> {
               onPressed: () {
                 final descripcion = _descripcionController.text.trim();
                 if (descripcion.isNotEmpty) {
-                  _editRol(rol['idRol'], {'descripcion': descripcion});
+                  _editRol(rol['id_rol'], {'descripcion': descripcion});
                   Navigator.of(context).pop();
                 } else {
                   _showError('Completa el campo de descripción.');
                 }
               },
               child: Text('Guardar'),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.teal),
             ),
           ],
         );
