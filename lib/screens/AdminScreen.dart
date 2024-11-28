@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:http/http.dart' as http;
 void main() {
   runApp(MyApp());
 }
@@ -206,6 +206,12 @@ class _AdminScreenState extends State<AdminScreen> {
 
   Future<void> _logout(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getInt('userId');
+    const apiUrl2 = 'https://symmetrical-funicular-mb61.onrender.com/usuarios/estado';
+    final response2 = await http.put(
+      Uri.parse('$apiUrl2/$userId?estado=false'),
+      headers: {'Content-Type': 'application/json'},
+    );
     await prefs.clear();
     Navigator.pushReplacementNamed(context, '/');
   }
