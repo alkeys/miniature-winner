@@ -7,6 +7,8 @@
 
 [![imagen.png](https://i.postimg.cc/hjpKGph9/imagen.png)](https://postimg.cc/njjyRK4z)
 
+[![imagen.png](https://i.postimg.cc/br58xrxr/imagen.png)](https://postimg.cc/gL3fdYBb)
+
 # Gojo Project
 
 Gojo es una aplicación desarrollada con Flutter. Este proyecto incluye soporte para Linux, lo que permite su ejecución en sistemas basados en Linux como Arch Linux y Debian.
