@@ -35,6 +35,7 @@ class WelcomeScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  // Título de bienvenida
                   Text(
                     "Bienvenido a",
                     textAlign: TextAlign.center,
@@ -56,6 +57,7 @@ class WelcomeScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 40),
+                  // Botón de Iniciar
                   ElevatedButton(
                     onPressed: () {
                       Navigator.pushReplacementNamed(context, '/login'); // Redirige a la pantalla de inicio
@@ -78,6 +80,7 @@ class WelcomeScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 30),
+                  // Texto de "Desarrollado por"
                   Text(
                     "Desarrollado por:",
                     textAlign: TextAlign.center,
@@ -88,6 +91,7 @@ class WelcomeScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 20),
+                  // Tarjetas de contribuyentes
                   _buildContributorCard(
                     context,
                     name: "Alexander Aviles",
@@ -126,11 +130,13 @@ class WelcomeScreen extends StatelessWidget {
         padding: const EdgeInsets.all(10.0),
         child: Row(
           children: [
+            // Avatar del contribuidor
             CircleAvatar(
               backgroundColor: Color(0xFF6A1B9A),
               child: Icon(icon, color: Colors.white),
             ),
             SizedBox(width: 10),
+            // Nombre y GitHub
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -153,6 +159,7 @@ class WelcomeScreen extends StatelessWidget {
                 ],
               ),
             ),
+            // Botón para abrir el perfil en GitHub
             TextButton(
               onPressed: () => _launchURL(githubUrl),
               style: TextButton.styleFrom(

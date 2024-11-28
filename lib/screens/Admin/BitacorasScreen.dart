@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:excel/excel.dart';
+
 class BitacorasScreen extends StatefulWidget {
   @override
   _BitacorasScreenState createState() => _BitacorasScreenState();
@@ -12,6 +13,8 @@ class BitacorasScreen extends StatefulWidget {
 
 class _BitacorasScreenState extends State<BitacorasScreen> {
   List<Map<String, dynamic>> bitacoras = [];
+  bool _isLoading = true;
+
   final String apiUrlBitacoras = 'https://symmetrical-funicular-mb61.onrender.com/bitacora/';
   final String apiUrlUsuarios = 'https://symmetrical-funicular-mb61.onrender.com/usuarios/';
   final String apiUrlVehiculos = 'https://symmetrical-funicular-mb61.onrender.com/vehiculos/';
@@ -23,15 +26,14 @@ class _BitacorasScreenState extends State<BitacorasScreen> {
     super.initState();
     _fetchBitacoras();
   }
-  bool _isLoading = true; // Variable para controlar el estado de carga
-  // Obtener bitácoras desde la API
+
   Future<void> _fetchBitacoras() async {
     try {
       final response = await http.get(Uri.parse(apiUrlBitacoras));
       if (response.statusCode == 200) {
         setState(() {
           bitacoras = List<Map<String, dynamic>>.from(json.decode(response.body));
-          _isLoading = false; // Actualiza _isLoading a false después de obtener las bitácoras
+          _isLoading = false;
         });
       } else {
         _showError('Error al obtener bitácoras');
@@ -41,7 +43,6 @@ class _BitacorasScreenState extends State<BitacorasScreen> {
     }
   }
 
-  // Obtener los detalles de usuario, vehículo, gasolinera, proyecto
   Future<Map<String, dynamic>> _fetchDetalles(int idUsr, int idVehiculo, int idGasolinera, int idProyecto) async {
     try {
       final usuarioResponse = await http.get(Uri.parse('$apiUrlUsuarios$idUsr'));
@@ -63,18 +64,18 @@ class _BitacorasScreenState extends State<BitacorasScreen> {
       throw Exception('Error de conexión: $e');
     }
   }
-  // Mostrar mensaje de error
+
   void _showError(String message) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Error'),
+          title: Text('Error', style: TextStyle(color: Colors.red)),
           content: Text(message),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('Aceptar'),
+              child: Text('Aceptar', style: TextStyle(color: Colors.blue)),
             ),
           ],
         );
@@ -82,7 +83,6 @@ class _BitacorasScreenState extends State<BitacorasScreen> {
     );
   }
 
-  // Mostrar detalles de la bitácora
   void _showBitacoraDetails(Map<String, dynamic> bitacora) async {
     try {
       final detalles = await _fetchDetalles(
@@ -96,7 +96,7 @@ class _BitacorasScreenState extends State<BitacorasScreen> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Detalles de Bitácora'),
+            title: Text('Detalles de Bitácora', style: TextStyle(fontWeight: FontWeight.bold)),
             content: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,7 +117,7 @@ class _BitacorasScreenState extends State<BitacorasScreen> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: Text('Cerrar'),
+                child: Text('Cerrar', style: TextStyle(color: Colors.blue)),
               ),
             ],
           );
@@ -134,7 +134,6 @@ class _BitacorasScreenState extends State<BitacorasScreen> {
       final excel = Excel.createExcel();
       final sheet = excel['Bitacoras'];
 
-      // Encabezados
       final headers = [
         'Usuario',
         'Kilómetros\nIniciales',
@@ -147,11 +146,9 @@ class _BitacorasScreenState extends State<BitacorasScreen> {
         'Proyecto',
       ];
 
-      // Agregar encabezados al Excel
       sheet.appendRow(headers);
 
-      // Filas de datos para el PDF
-      final pdfRows = <List<String>>[headers]; // Inicia con los encabezados
+      final pdfRows = <List<String>>[headers];
 
       for (var bitacora in bitacoras) {
         final detalles = await _fetchDetalles(
@@ -173,22 +170,18 @@ class _BitacorasScreenState extends State<BitacorasScreen> {
           detalles['proyecto']['nombre'],
         ];
 
-        // Agregar fila al Excel
         sheet.appendRow(row);
-
-        // Agregar fila al PDF
         pdfRows.add(row.map((e) => e.toString()).toList());
       }
 
-      // Crear la tabla en el PDF con orientación horizontal
       pdf.addPage(
         pw.Page(
-          pageFormat: PdfPageFormat.a4.landscape, // Configuración para orientación horizontal
+          pageFormat: PdfPageFormat.a4.landscape,
           build: (pw.Context context) {
             return pw.Table.fromTextArray(
-              headers: headers, // Encabezados
-              data: pdfRows.sublist(1), // Datos (sin repetir encabezados)
-              cellStyle: const pw.TextStyle(fontSize: 10),
+              headers: headers,
+              data: pdfRows.sublist(1),
+              cellStyle: pw.TextStyle(fontSize: 10),
               headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold),
               border: pw.TableBorder.all(),
             );
@@ -196,7 +189,6 @@ class _BitacorasScreenState extends State<BitacorasScreen> {
         ),
       );
 
-      // Generar y descargar el archivo PDF
       final pdfBytes = await pdf.save();
       final pdfBlob = html.Blob([pdfBytes], 'application/pdf');
       final pdfUrl = html.Url.createObjectUrlFromBlob(pdfBlob);
@@ -206,7 +198,6 @@ class _BitacorasScreenState extends State<BitacorasScreen> {
         ..click();
       html.Url.revokeObjectUrl(pdfUrl);
 
-      // Generar y descargar el archivo Excel
       final excelBytes = excel.encode()!;
       final excelBlob = html.Blob([excelBytes], 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
       final excelUrl = html.Url.createObjectUrlFromBlob(excelBlob);
@@ -224,58 +215,62 @@ class _BitacorasScreenState extends State<BitacorasScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text('Bitácoras'),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.download),
-              onPressed: _generateReport,
-            ),
-          ],
-        ),
+        title: Text('Bitácoras'),
+        backgroundColor: Colors.blueAccent,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.download, color: Colors.white),
+            onPressed: _generateReport,
+          ),
+        ],
+      ),
       body: _isLoading
-          ? Center(
-              child:CircularProgressIndicator(), // Texto que reemplaza el indicador de carga
-            )
+          ? Center(child: CircularProgressIndicator())
           : ListView.builder(
-              itemCount: bitacoras.length,
-              itemBuilder: (context, index) {
-                final bitacora = bitacoras[index];
-                return FutureBuilder(
-                  future: _fetchDetalles(
-                    bitacora['id_usr'],
-                    bitacora['id_vehiculo'],
-                    bitacora['id_gasolinera'],
-                    bitacora['id_proyecto'],
-                  ),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return ListTile(
-                        title: Text('Cargando...'),
-                        subtitle: Text('Cargando detalles de la bitácora...'),
-                      );
-                    } else if (snapshot.hasError) {
-                      return ListTile(
-                        title: Text('Error: ${snapshot.error}'),
-                      );
-                    } else {
-                      var detalles = snapshot.data as Map<String, dynamic>;
-                      return ListTile(
-                        title: Text('Bitácora de ${detalles['usuario']['nombre']}'),
-                        subtitle: Text('Km Inicial: ${bitacora['km_inicial']} | Km Final: ${bitacora['km_final']}'),
-                        onTap: () => _showBitacoraDetails(bitacora),
-                      );
-                    }
-                  },
-                );
-              },
+        itemCount: bitacoras.length,
+        itemBuilder: (context, index) {
+          final bitacora = bitacoras[index];
+          return FutureBuilder(
+            future: _fetchDetalles(
+              bitacora['id_usr'],
+              bitacora['id_vehiculo'],
+              bitacora['id_gasolinera'],
+              bitacora['id_proyecto'],
             ),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return ListTile(
+                  title: Text('Cargando...'),
+                  subtitle: Text('Cargando detalles de la bitácora...'),
+                );
+              } else if (snapshot.hasError) {
+                return ListTile(
+                  title: Text('Error: ${snapshot.error}'),
+                );
+              } else {
+                var detalles = snapshot.data as Map<String, dynamic>;
+                return Card(
+                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  child: ListTile(
+                    title: Text(
+                      'Bitácora de ${detalles['usuario']['nombre']}',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text('Km Inicial: ${bitacora['km_inicial']} | Km Final: ${bitacora['km_final']}'),
+                    onTap: () => _showBitacoraDetails(bitacora),
+                  ),
+                );
+              }
+            },
+          );
+        },
+      ),
     );
   }
 }
-
-

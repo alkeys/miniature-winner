@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async'; // Importar Timer
 import '../services/bitacora_service.dart';
 import '../models/Bitacora.dart';
-
+import 'package:http/http.dart' as http;
 class BitacoraScreen extends StatefulWidget {
   @override
   _BitacoraScreenState createState() => _BitacoraScreenState();
@@ -73,6 +73,12 @@ class _BitacoraScreenState extends State<BitacoraScreen> {
             icon: Icon(Icons.logout, color: Colors.blue),
             onPressed: () async {
               final prefs = await SharedPreferences.getInstance();
+              final userId = prefs.getInt('userId');
+              const apiUrl2 = 'https://symmetrical-funicular-mb61.onrender.com/usuarios/estado';
+              final response = await http.put(
+                Uri.parse('$apiUrl2/$userId?estado=false'),
+                headers: {'Content-Type': 'application/json'},
+              );
               await prefs.remove('userId');
               await prefs.remove('rol');
               Navigator.pushReplacementNamed(context, '/');

@@ -102,12 +102,12 @@ class _ProyectosScreenState extends State<ProyectosScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Éxito'),
+          title: Text('Éxito', style: TextStyle(color: Colors.green)),
           content: Text(message),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('Aceptar'),
+              child: Text('Aceptar', style: TextStyle(color: Colors.blue)),
             ),
           ],
         );
@@ -121,12 +121,12 @@ class _ProyectosScreenState extends State<ProyectosScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Error'),
+          title: Text('Error', style: TextStyle(color: Colors.red)),
           content: Text(message),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('Aceptar'),
+              child: Text('Aceptar', style: TextStyle(color: Colors.blue)),
             ),
           ],
         );
@@ -138,187 +138,229 @@ class _ProyectosScreenState extends State<ProyectosScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Gestión de Proyectos'),
+        title: const Text('Gestión de Proyectos', style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.blueAccent,
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: proyectos.length,
-              itemBuilder: (context, index) {
-                final proyecto = proyectos[index];
-                return ListTile(
-                  title: Text('${proyecto['nombre']}'),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Dirección: ${proyecto['direccion']}'),
-                      Text('Estado: ${proyecto['activo'] ? 'Activo' : 'Inactivo'}'),
-                    ],
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.edit, color: Colors.blue),
-                        onPressed: () {
-                          _showEditProyectoDialog(proyecto);
-                        },
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Lista de proyectos
+            Expanded(
+              child: ListView.builder(
+                itemCount: proyectos.length,
+                itemBuilder: (context, index) {
+                  final proyecto = proyectos[index];
+                  return Card(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    elevation: 4,
+                    margin: EdgeInsets.symmetric(vertical: 8),
+                    child: ListTile(
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      title: Text('${proyecto['nombre']}', style: TextStyle(fontWeight: FontWeight.bold)),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Dirección: ${proyecto['direccion']}'),
+                          Text('Estado: ${proyecto['activo'] ? 'Activo' : 'Inactivo'}'),
+                        ],
                       ),
-                      IconButton(
-                        icon: Icon(Icons.delete, color: Colors.red),
-                        onPressed: () {
-                          _deleteProyecto(proyecto['id_proyecto']);
-                        },
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.edit, color: Colors.blue),
+                            onPressed: () {
+                              _showEditProyectoDialog(proyecto);
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.delete, color: Colors.red),
+                            onPressed: () {
+                              _deleteProyecto(proyecto['id_proyecto']);
+                            },
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                );
-              },
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
-          ElevatedButton(
-            onPressed: _showAddProyectoDialog,
-            child: Text('Agregar Proyecto'),
-          ),
-        ],
+
+            // Botón para agregar proyecto
+            ElevatedButton(
+              onPressed: _showAddProyectoDialog,
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white, backgroundColor: Colors.blueAccent,
+                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              child: Text('Agregar Proyecto', style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   // Diálogo para agregar proyecto
-void _showAddProyectoDialog() {
-  _nombreController.clear();
-  _direccionController.clear();
-  _activo = true;
+  void _showAddProyectoDialog() {
+    _nombreController.clear();
+    _direccionController.clear();
+    _activo = true;
 
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Agregar Proyecto'),
-        content: StatefulBuilder(
-          builder: (BuildContext context, StateSetter setStateDialog) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: _nombreController,
-                  decoration: InputDecoration(labelText: 'Nombre'),
-                ),
-                TextField(
-                  controller: _direccionController,
-                  decoration: InputDecoration(labelText: 'Dirección'),
-                ),
-                SwitchListTile(
-                  title: Text('Activo'),
-                  value: _activo,
-                  onChanged: (bool value) {
-                    setStateDialog(() {
-                      _activo = value;
-                    });
-                  },
-                ),
-              ],
-            );
-          },
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text('Cancelar'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              final nombre = _nombreController.text.trim();
-              final direccion = _direccionController.text.trim();
-              if (nombre.isNotEmpty && direccion.isNotEmpty) {
-                _addProyecto({
-                  'nombre': nombre,
-                  'direccion': direccion,
-                  'activo': _activo,
-                });
-                Navigator.of(context).pop();
-              } else {
-                _showError('Completa todos los campos.');
-              }
-            },
-            child: Text('Guardar'),
-          ),
-        ],
-      );
-    },
-  );
-}
-
-// Diálogo para editar proyecto
-void _showEditProyectoDialog(Map<String, dynamic> proyecto) {
-  _nombreController.text = proyecto['nombre'];
-  _direccionController.text = proyecto['direccion'];
-  _activo = proyecto['activo'];
-
-  showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: Text('Editar Proyecto'),
-        content: StatefulBuilder(
-          builder: (BuildContext context, StateSetter setStateDialog) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: _nombreController,
-                  decoration: InputDecoration(labelText: 'Nombre'),
-                ),
-                TextField(
-                  controller: _direccionController,
-                  decoration: InputDecoration(labelText: 'Dirección'),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Activo:'),
-                    Switch(
-                      value: _activo,
-                      onChanged: (value) {
-                        setStateDialog(() {
-                          _activo = value;
-                        });
-                      },
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Agregar Proyecto', style: TextStyle(fontWeight: FontWeight.bold)),
+          content: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setStateDialog) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: _nombreController,
+                    decoration: InputDecoration(
+                      labelText: 'Nombre',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                     ),
-                  ],
-                ),
-              ],
-            );
-          },
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text('Cancelar'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              final nombre = _nombreController.text.trim();
-              final direccion = _direccionController.text.trim();
-              if (nombre.isNotEmpty && direccion.isNotEmpty) {
-                _editProyecto(proyecto['id_proyecto'], {
-                  'nombre': nombre,
-                  'direccion': direccion,
-                  'activo': _activo,
-                });
-                Navigator.of(context).pop();
-              } else {
-                _showError('Completa todos los campos.');
-              }
+                  ),
+                  SizedBox(height: 16),
+                  TextField(
+                    controller: _direccionController,
+                    decoration: InputDecoration(
+                      labelText: 'Dirección',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  SwitchListTile(
+                    title: Text('Activo'),
+                    value: _activo,
+                    onChanged: (bool value) {
+                      setStateDialog(() {
+                        _activo = value;
+                      });
+                    },
+                  ),
+                ],
+              );
             },
-            child: Text('Guardar'),
           ),
-        ],
-      );
-    },
-  );
-}
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Cancelar', style: TextStyle(color: Colors.blue)),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final nombre = _nombreController.text.trim();
+                final direccion = _direccionController.text.trim();
+                if (nombre.isNotEmpty && direccion.isNotEmpty) {
+                  _addProyecto({
+                    'nombre': nombre,
+                    'direccion': direccion,
+                    'activo': _activo,
+                  });
+                  Navigator.of(context).pop();
+                } else {
+                  _showError('Completa todos los campos.');
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white, backgroundColor: Colors.blueAccent,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              child: Text('Guardar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
+  // Diálogo para editar proyecto
+  void _showEditProyectoDialog(Map<String, dynamic> proyecto) {
+    _nombreController.text = proyecto['nombre'];
+    _direccionController.text = proyecto['direccion'];
+    _activo = proyecto['activo'];
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Editar Proyecto', style: TextStyle(fontWeight: FontWeight.bold)),
+          content: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setStateDialog) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: _nombreController,
+                    decoration: InputDecoration(
+                      labelText: 'Nombre',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  TextField(
+                    controller: _direccionController,
+                    decoration: InputDecoration(
+                      labelText: 'Dirección',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Activo:'),
+                      Switch(
+                        value: _activo,
+                        onChanged: (value) {
+                          setStateDialog(() {
+                            _activo = value;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              );
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Cancelar', style: TextStyle(color: Colors.blue)),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final nombre = _nombreController.text.trim();
+                final direccion = _direccionController.text.trim();
+                if (nombre.isNotEmpty && direccion.isNotEmpty) {
+                  _editProyecto(proyecto['id_proyecto'], {
+                    'nombre': nombre,
+                    'direccion': direccion,
+                    'activo': _activo,
+                  });
+                  Navigator.of(context).pop();
+                } else {
+                  _showError('Completa todos los campos.');
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white, backgroundColor: Colors.blueAccent,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              child: Text('Guardar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

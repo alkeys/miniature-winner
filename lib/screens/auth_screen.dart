@@ -67,6 +67,12 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
         await prefs.setInt('userId', userId);
         await prefs.setInt('rol', rol);
 
+        // cambia el estado de usuari a activo  https://symmetrical-funicular-mb61.onrender.com/usuarios/estado/id?estado=false
+        const apiUrl2 = 'https://symmetrical-funicular-mb61.onrender.com/usuarios/estado';
+        final response2 = await http.put(
+          Uri.parse('$apiUrl2/$userId?estado=true'),
+          headers: {'Content-Type': 'application/json'},
+        );
 
         // Navegar a la pantalla de Bitácora
         if (rol == 2) {

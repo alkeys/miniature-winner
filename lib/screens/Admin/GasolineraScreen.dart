@@ -101,7 +101,7 @@ class _GasolinerasScreenState extends State<GasolinerasScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Éxito'),
+          title: Text('Éxito', style: TextStyle(color: Colors.green)),
           content: Text(message),
           actions: [
             TextButton(
@@ -120,7 +120,7 @@ class _GasolinerasScreenState extends State<GasolinerasScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Error'),
+          title: Text('Error', style: TextStyle(color: Colors.red)),
           content: Text(message),
           actions: [
             TextButton(
@@ -138,41 +138,75 @@ class _GasolinerasScreenState extends State<GasolinerasScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Gestión de Gasolineras'),
+        backgroundColor: Colors.deepOrangeAccent,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: _fetchGasolineras,
+            tooltip: 'Actualizar lista',
+          ),
+        ],
       ),
       body: Column(
         children: [
           Expanded(
-            child: ListView.builder(
+            child: gasolineras.isEmpty
+                ? Center(child: CircularProgressIndicator())
+                : ListView.builder(
               itemCount: gasolineras.length,
               itemBuilder: (context, index) {
                 final gasolinera = gasolineras[index];
-                return ListTile(
-                  title: Text('${gasolinera['nombre']}'),
-                  subtitle: Text('Dirección: ${gasolinera['direccion']}'),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.edit, color: Colors.blue),
-                        onPressed: () {
-                          _showEditGasolineraDialog(gasolinera);
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.delete, color: Colors.red),
-                        onPressed: () {
-                          _deleteGasolinera(gasolinera['id_gasolinera']);
-                        },
-                      ),
-                    ],
+                return Card(
+                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: ListTile(
+                    contentPadding: EdgeInsets.all(16),
+                    title: Text(
+                      '${gasolinera['nombre']}',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text('Dirección: ${gasolinera['direccion']}'),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.edit, color: Colors.blue),
+                          onPressed: () {
+                            _showEditGasolineraDialog(gasolinera);
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          onPressed: () {
+                            _deleteGasolinera(gasolinera['id_gasolinera']);
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
             ),
           ),
-          ElevatedButton(
-            onPressed: _showAddGasolineraDialog,
-            child: Text('Agregar Gasolinera'),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ElevatedButton(
+              onPressed: _showAddGasolineraDialog,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.deepOrangeAccent,
+                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: Text(
+                'Agregar Gasolinera',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ),
           ),
         ],
       ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CreateBitacoraScreen extends StatefulWidget {
@@ -154,13 +153,20 @@ class _CreateBitacoraScreenState extends State<CreateBitacoraScreen> {
     return DropdownButtonFormField<int>(
       decoration: InputDecoration(
         labelText: label,
-        border: OutlineInputBorder(),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: Colors.blue.shade300),
+        ),
+        contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
       ),
       value: selectedValue,
       items: items
           .map((item) => DropdownMenuItem<int>(
         value: item['id'],
-        child: Text(item['nombre']),
+        child: Text(
+          item['nombre'],
+          style: TextStyle(color: Colors.blue.shade700),
+        ),
       ))
           .toList(),
       onChanged: onChanged,
@@ -178,6 +184,7 @@ class _CreateBitacoraScreenState extends State<CreateBitacoraScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Crear Bitácora'),
+        backgroundColor: Colors.blue.shade600,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -186,12 +193,10 @@ class _CreateBitacoraScreenState extends State<CreateBitacoraScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                TextFormField(
+                _buildTextField(
                   controller: _comentarioController,
-                  decoration: InputDecoration(
-                    labelText: 'Comentario',
-                    border: OutlineInputBorder(),
-                  ),
+                  label: 'Comentario',
+                  keyboardType: TextInputType.text,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'El comentario es obligatorio';
@@ -199,14 +204,10 @@ class _CreateBitacoraScreenState extends State<CreateBitacoraScreen> {
                     return null;
                   },
                 ),
-                SizedBox(height: 16.0),
-                TextFormField(
+                _buildTextField(
                   controller: _kmInicialController,
+                  label: 'KM Inicial',
                   keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: 'KM Inicial',
-                    border: OutlineInputBorder(),
-                  ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'El KM Inicial es obligatorio';
@@ -214,14 +215,10 @@ class _CreateBitacoraScreenState extends State<CreateBitacoraScreen> {
                     return null;
                   },
                 ),
-                SizedBox(height: 16.0),
-                TextFormField(
+                _buildTextField(
                   controller: _kmFinalController,
+                  label: 'KM Final',
                   keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: 'KM Final',
-                    border: OutlineInputBorder(),
-                  ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'El KM Final es obligatorio';
@@ -229,14 +226,10 @@ class _CreateBitacoraScreenState extends State<CreateBitacoraScreen> {
                     return null;
                   },
                 ),
-                SizedBox(height: 16.0),
-                TextFormField(
+                _buildTextField(
                   controller: _numGalonesController,
+                  label: 'Número de Galones',
                   keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: 'Número de Galones',
-                    border: OutlineInputBorder(),
-                  ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'El número de galones es obligatorio';
@@ -244,14 +237,10 @@ class _CreateBitacoraScreenState extends State<CreateBitacoraScreen> {
                     return null;
                   },
                 ),
-                SizedBox(height: 16.0),
-                TextFormField(
+                _buildTextField(
                   controller: _costoController,
+                  label: 'Costo',
                   keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: 'Costo',
-                    border: OutlineInputBorder(),
-                  ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'El costo es obligatorio';
@@ -259,13 +248,10 @@ class _CreateBitacoraScreenState extends State<CreateBitacoraScreen> {
                     return null;
                   },
                 ),
-                SizedBox(height: 16.0),
-                TextFormField(
+                _buildTextField(
                   controller: _tipoGasolinaController,
-                  decoration: InputDecoration(
-                    labelText: 'Tipo de Gasolina',
-                    border: OutlineInputBorder(),
-                  ),
+                  label: 'Tipo de Gasolina',
+                  keyboardType: TextInputType.text,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'El tipo de gasolina es obligatorio';
@@ -311,12 +297,48 @@ class _CreateBitacoraScreenState extends State<CreateBitacoraScreen> {
                     ? CircularProgressIndicator()
                     : ElevatedButton(
                   onPressed: _createBitacora,
-                  child: Text('Crear Bitácora'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue.shade600,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    shadowColor: Colors.blueAccent,
+                    elevation: 5,
+                  ),
+                  child: Text(
+                    'Crear Bitácora',
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                  ),
                 ),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required TextInputType keyboardType,
+    required String? Function(String?) validator,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextFormField(
+        controller: controller,
+        keyboardType: keyboardType,
+        decoration: InputDecoration(
+          labelText: label,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(color: Colors.blue.shade300),
+          ),
+          contentPadding: EdgeInsets.symmetric(horizontal: 16),
+        ),
+        validator: validator,
       ),
     );
   }
