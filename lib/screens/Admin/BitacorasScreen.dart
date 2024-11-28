@@ -277,3 +277,5 @@ class _BitacorasScreenState extends State<BitacorasScreen> {
     );
   }
 }
+
+
