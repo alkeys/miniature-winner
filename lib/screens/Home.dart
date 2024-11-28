@@ -21,8 +21,8 @@ class WelcomeScreen extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0xFF6A1B9A), // Púrpura oscuro
-              Color(0xFF9C27B0), // Púrpura medio
+              Color(0xFFBC7CE5), // Púrpura oscuro
+              Color(0xFFD45EE8), // Púrpura medio
               Color(0xFFEDE7F6), // Púrpura claro
             ],
           ),
@@ -75,7 +75,7 @@ class WelcomeScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
-                        color: Color(0xFF6A1B9A),
+                        color: Color(0xFFBCC8F5),
                       ),
                     ),
                   ),
@@ -132,7 +132,7 @@ class WelcomeScreen extends StatelessWidget {
           children: [
             // Avatar del contribuidor
             CircleAvatar(
-              backgroundColor: Color(0xFF6A1B9A),
+              backgroundColor: Color(0xFF4A88E8),
               child: Icon(icon, color: Colors.white),
             ),
             SizedBox(width: 10),
@@ -146,7 +146,7 @@ class WelcomeScreen extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF6A1B9A),
+                      color: Color(0xFF79A9F1),
                     ),
                   ),
                   Text(
@@ -164,7 +164,7 @@ class WelcomeScreen extends StatelessWidget {
               onPressed: () => _launchURL(githubUrl),
               style: TextButton.styleFrom(
                 padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-                backgroundColor: Color(0xFF6A1B9A).withOpacity(0.1),
+                backgroundColor: Color(0xFF9D8CEE).withOpacity(0.1),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -174,7 +174,7 @@ class WelcomeScreen extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
-                  color: Color(0xFF6A1B9A),
+                  color: Color(0xFF608CEE),
                 ),
               ),
             ),
